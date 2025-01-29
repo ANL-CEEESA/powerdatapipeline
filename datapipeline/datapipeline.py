@@ -484,16 +484,16 @@ def resample_csvdataset(dataset:tf.data.Dataset,column_datetime:str,time_interva
     values = [data1[column_plot].numpy()[0] for data1 in data]    
 
     if time_interval_desired < time_interval_original:
-        print(f"Upsampling from {time_interval_original} to {time_interval_desired} seconds...")
+        print(f"Upsampling from {time_interval_original} to {time_interval_desired} seconds and displaying first 2 elements...")
         dataset = dataset.flat_map(lambda x: upsample_to_interval(x, time_interval=time_interval_desired,column_datetime=column_datetime,time_span=time_interval_original,fill_method="repeat")) # Step 3: Apply resampling with the desired interval (e.g., 120 seconds)
         for record in dataset.take(2):
-            print(record)
+            print({key: {'value':record[key].numpy()[0],'dtype':record[key].dtype} for key in record}) #'shape':record[key].shape
     
     elif time_interval_desired > time_interval_original:
-        print(f"Downsampling from {time_interval_original} to {time_interval_desired} seconds...")        
+        print(f"Downsampling from {time_interval_original} to {time_interval_desired} seconds and displaying first 2 elements...")        
         dataset = downsample_to_interval(dataset, time_interval = time_interval_desired, column_datetime = column_datetime)
         for record in dataset.take(2):
-            print(record)
+            print({key: {'value':record[key].numpy()[0],'dtype':record[key].dtype} for key in record}) #'shape':record[key].shape
     
     else:
         print(f"No resampling since {time_interval_desired}=={time_interval_original}")
@@ -534,7 +534,7 @@ def add_select_resample_csvdataset(dataset:tf.data.Dataset,columns_added:List[st
         raise ValueError("All time intervals were matching")
 
     if resample:
-        resample_csvdataset(dataset,column_datetime,time_interval_original,time_interval_desired,column_name)
+        dataset = resample_csvdataset(dataset,column_datetime,time_interval_original,time_interval_desired,column_name)
     else:
         print("Not resampling")
     
