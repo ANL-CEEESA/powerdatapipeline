@@ -97,8 +97,29 @@ def find_minutes_in_df(df:pd.DataFrame,datetime_column:str):
 
 	print("Finding number of days,minutes, and seconds...")
 	time_difference = df[datetime_column].max() - df[datetime_column].min() # Calculate the difference between maximum and minimum datetime values	
-	#minutes_of_data = time_difference.total_seconds() / 60.0 # Convert the time difference to minutes
-
 	days, minutes, remaining_seconds = convert_seconds(time_difference.total_seconds())
-	#print(f"Found following minutes in {datetime_column} dataframe:{minutes_of_data:.2f}")
 	print(f"Found following: {days:.2f} days, {minutes:.2f} minutes, and {remaining_seconds:.2f} seconds")
+
+def find_df_timeperiod(df:pd.DataFrame,column_datetime:str="datetime"):
+	"""Upsample origina time series"""
+	
+	delta_t_seconds = (df[column_datetime].iloc[-1]-df[column_datetime].iloc[-2]).total_seconds()
+	delta_t_minutes = int(delta_t_seconds/60.0)
+	print(f"Original time period:{delta_t_seconds} seconds")
+	print(f"Original time period:{delta_t_minutes} minutes")
+
+def get_downsampled_df(df_timeseries:pd.DataFrame,column_datetime:str="datetime",downsample_time_period:str="1S"):
+	"""Downsample origina time series"""
+
+	find_df_timeperiod(df_timeseries,column_datetime)
+	print(f"Columns in downsampled df:{list(df_timeseries.columns)}")
+	df_timeseries_downsampled = df_timeseries.set_index(column_datetime)
+    
+	df_timeseries_downsampled = df_timeseries_downsampled.resample(downsample_time_period).mean()  # '5T' represents 5-minute interval '1S' represents 1 second interval
+
+	df_timeseries_downsampled = df_timeseries_downsampled.reset_index()
+	df_timeseries_downsampled.index.name = "index"
+	print("After downsampling...")
+	find_df_timeperiod(df_timeseries_downsampled,column_datetime)
+	
+	return df_timeseries_downsampled

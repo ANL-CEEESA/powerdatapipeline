@@ -195,3 +195,16 @@ def check_time_intervals(batch,column_datetime:str,time_interval_desired:float):
 	match = tf.reduce_all(tf.equal(intervals, time_interval_desired)) # Check if all intervals are equal to the desired_time_interval
 	
 	return match
+
+def get_one_hot_encoder_for_string_column(dataset:tf.data.Dataset,string_column:str,sample_data:list):
+	"""Create one hot encoder for the string column in a dataset"""
+	
+	print(f"Finding unique strings in {string_column}...")
+	unique_strings = list(set(list(batch[string_column][0].decode("utf-8") for batch in dataset.as_numpy_iterator())))
+	print(f"Unique strings:{unique_strings}")
+	one_hot_encoder = keras.layers.StringLookup(vocabulary=unique_strings, output_mode='one_hot')
+	#layer.adapt(data)
+	
+	print(f"Converting sample strings:{sample_data} to one hot encoded data:{one_hot_encoder(sample_data)}")
+
+	return one_hot_encoder

@@ -51,3 +51,36 @@ def find_files(filepattern:str):
 	print(f"Found following file names:{filenames}")
 	return filenames
 
+def validation_errors_to_df(validation_errors):
+	"""Convert validation error into a dataframe"""
+
+	error_types = [] # Initialize empty lists to store information
+	locations = []
+	messages = []
+	input_values = []
+	row_indexes = []
+	measurement_types = []
+
+	# Extract information from each validation error
+	for error in validation_errors:
+		error_types.append(error["type"])
+		locations.append(".".join(map(str, error["loc"])))
+		row_indexes.append(error["loc"][1])
+		measurement_types.append(error["loc"][2])
+		messages.append(error["msg"])
+		input_values.append(error["input"])
+
+	# Create a Pandas DataFrame
+	df_validation_errors = pd.DataFrame({
+		"error_type": error_types,
+		"location": locations,
+		"row_index":row_indexes,
+		"measurement_type":measurement_types,
+		"message": messages,
+		"measurement_value": input_values
+	})
+
+	print(df_validation_errors.head())
+	df_validation_errors.to_csv("validation_errors.csv")
+	return df_validation_errors
+
