@@ -1,0 +1,13 @@
+*.pyc
+*.log
+*.svg
+*.png
+*.dot
+*.pb
+*.index
+*.data-00000-of-00001
+*.keras
+*.zip
+*.gz
+*.7z
+*.csv

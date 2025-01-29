@@ -1,0 +1,29 @@
+{
+ 
+  "data_pipeline": {
+    "extraction": {
+      "csv_folder": "../data/smartmeter",
+      "csv_file_train":"2016_02_60621_time_series.csv",
+      "use_existing_columnnames": true,
+      "n_rows":2000,
+      "columns_original": [],
+      "columns_selected": ["date_block","time_block","Load_residential_single_0","Load_residential_single_1","Load_residential_single_2"],
+      "column_datetimedict":{"column_date":"date_block","column_time":"time_block"},
+      "columns_added":["datetimestamp","datetimestampseconds"],
+      "column_datetime": "datetimestampseconds",
+      "time_interval_original":1800
+    },
+    "transformation": {
+      "features":[{"feature_type":"numerical","output_mode":"normalized","features":["Load_residential_single_0","Load_residential_single_1"]},
+                        {"feature_type":"datetimestamp_seconds","output_mode":"cyclical_minute_hour_day","features":["datetimestampseconds"]}
+      ],      
+      "time_interval_desired":300,      
+      "n_rows_to_adapt_featurespace":1000000
+    }
+  },
+
+  "logging": {
+    "plot_enabled": false,
+    "plot_directory": "plots/"
+  }
+}

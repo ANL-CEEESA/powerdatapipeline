@@ -1,0 +1,8 @@
+*.pyc
+*.csv
+*.keras
+*.png
+*.7z
+data/
+docs/
+venv*

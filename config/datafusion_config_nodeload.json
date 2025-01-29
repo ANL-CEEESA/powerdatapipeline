@@ -1,0 +1,29 @@
+{
+ 
+  "data_pipeline": {
+    "extraction": {
+      "csv_folder": "C:/Users/splathottam/Box Sync/GitLab/dercybersecurity/data/nodeload",
+      "csv_file_train":"load_node_model-123Bus_timeseries-solarhome_aus_m-Feb_days-10.csv",
+      "use_existing_columnnames": true,
+      "n_rows":2000,
+      "columns_original": [],
+      "columns_selected": ["datetime","s1a","s2b","s4c"],
+      "column_datetimedict":{"column_datetime":"datetime"},    
+      "columns_added":["datetimestampseconds"],
+      "column_datetime": "datetimestampseconds",
+      "time_interval_original":900
+    },
+    "transformation": {
+      "features":[{"feature_type":"numerical","output_mode":"normalized","features":["s1a","s2b","s4c"]},
+                        {"feature_type":"datetimestamp_seconds","output_mode":"cyclical_minute_hour_day","features":["datetimestampseconds"]}
+      ],
+      "time_interval_desired":300,      
+      "n_rows_to_adapt_featurespace":1000000
+    }
+  },
+
+  "logging": {
+    "plot_enabled": false,
+    "plot_directory": "plots/"
+  }
+}

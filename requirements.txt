@@ -1,0 +1,11 @@
+keras
+tensorflow
+numpy
+scipy
+pandas
+matplotlib
+scikit-learn
+tqdm
+pydantic
+pandera
+pyarrow

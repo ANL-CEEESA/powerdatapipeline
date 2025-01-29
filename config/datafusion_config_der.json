@@ -1,0 +1,28 @@
+{
+ 
+  "data_pipeline": {
+    "extraction": {
+      "csv_folder": "C:/Users/splathottam/Box Sync/GitLab/dercybersecurity/data/fronius_timeseries",
+      "csv_file_train":"Fronius2_measurements_missing_timestamps_added_Solar-240303-240309_n-604799.csv",
+      "use_existing_columnnames": true,
+      "n_rows":200000,
+      "columns_original": [],
+      "columns_selected": ["datetimestampseconds","W","DCW","AphA","PhVphA"],
+      "columns_added":[],
+      "column_datetime": "datetimestampseconds",
+      "time_interval_original":1
+    },
+    "transformation": {
+      "features":[{"feature_type":"numerical","output_mode":"normalized","features":["W","DCW","AphA","PhVphA"]},
+                    {"feature_type":"datetimestamp_seconds","output_mode":"cyclical_minute","features":["datetimestampseconds"]}
+                 ],      
+      "time_interval_desired":300,      
+      "n_rows_to_adapt_featurespace":10000
+    }
+  },
+
+  "logging": {
+    "plot_enabled": false,
+    "plot_directory": "plots/"
+  }
+}
