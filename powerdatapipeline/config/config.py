@@ -7,25 +7,6 @@ from pydantic import DirectoryPath, ValidationInfo, field_validator
 from pydantic import FilePath, ConfigDict
 
 # Automating validation for training/inference config files
-from dercybersecurity import model_registry
-# In order to allow for model extensions without library code changes
-
-
-def register_model(identifier):
-    if identifier in model_registry:
-        logging.warning(f"Warning: {identifier} overrides an existing model identifier.")
-
-    def wrapper(model_class):
-        required_methods = ['compile', 'fit', 'call']
-
-        for method in required_methods:
-            assert hasattr(model_class,
-                           method), f"Registered model '{identifier}' missing required {method}(...) method."
-        model_registry[identifier] = model_class
-        return model_class
-
-    return wrapper
-
 
 # Dictionary wrapper in order to retain current indexing scheme
 class BaseModelDict(BaseModel):
