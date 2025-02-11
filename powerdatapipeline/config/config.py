@@ -5,8 +5,23 @@ from typing import Optional
 from pydantic import BaseModel, model_validator, ValidationError
 from pydantic import DirectoryPath, ValidationInfo, field_validator
 from pydantic import FilePath, ConfigDict
-
+from powerdatapipeline import model_registry
 # Automating validation for training/inference config files
+
+def register_model(identifier):
+    if identifier in model_registry:
+        logging.warning(f"Warning: {identifier} overrides an existing model identifier.")
+
+    def wrapper(model_class):
+        required_methods = ['compile', 'fit', 'call']
+
+        for method in required_methods:
+            assert hasattr(model_class,
+                           method), f"Registered model '{identifier}' missing required {method}(...) method."
+        model_registry[identifier] = model_class
+        return model_class
+
+    return wrapper
 
 # Dictionary wrapper in order to retain current indexing scheme
 class BaseModelDict(BaseModel):
