@@ -11,4 +11,4 @@ dynamic = ["dependencies"]
 dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools]
-packages=["powerdatapipeline"]
+packages=["powerdatapipeline", "powerdatapipeline.config", "powerdatapipeline.utilities", "powerdatapipeline.datapipeline"]
