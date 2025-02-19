@@ -8,7 +8,6 @@ from typing import List,Union
 
 import numpy as np
 import matplotlib.pyplot as plt
-from powerdatapipeline.config.config import RunConfig
 
 def investigate_csv_file(csv_filepath:str):
 	"""Iterate through CSV file and find first row elements, columns, and number of rows"""
@@ -38,36 +37,6 @@ def investigate_csv_file(csv_filepath:str):
 	return column_name_present,first_row_elements,n_columns,n_rows
 
 import csv
-
-def investigate_csv_file(csv_filepath: str):
-	"""Iterate through CSV file and find first row elements, columns, number of rows, and NaN count."""
-	print(f"Checking CSV file: {csv_filepath}...")
-
-	nan_count = 0
-	with open(csv_filepath, 'r', newline='') as csvfile:
-		reader = csv.reader(csvfile)
-		first_row = next(reader, None)  # Check if there is at least one row
-		
-		assert first_row is not None, "First row cannot be None!"
-		first_row_elements = [cell for cell in first_row]
-		n_columns = len(first_row_elements)
-		n_rows = 0
-
-		for row in reader:
-			n_rows += 1
-			# Count empty strings as NaN values
-			nan_count += sum(1 for cell in row if cell.strip() == '')
-		
-		column_name_present = all(isinstance(cell, str) for cell in first_row)  # Assuming first row contains column names
-
-		if column_name_present:
-			print(f"CSV file contains {n_rows} rows and {n_columns} column names: {[cell for cell in first_row][0:10]} (first 10 columns shown)")
-		else:
-			print(f"CSV file contains {n_rows} rows and {n_columns} first row elements: {[cell for cell in first_row][0:10]} (first 10 columns shown)")
-		
-		print(f"Number of NaN (empty) values in CSV: {nan_count}")
-
-	return column_name_present, first_row_elements, n_columns, n_rows, nan_count
 
 def count_total_rows(file_path:str):
 	with open(file_path, 'r', newline='') as csvfile:

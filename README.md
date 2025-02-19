@@ -57,6 +57,16 @@ git push origin yourbranchname
 ```
 To learn more about using Git, please use this [tutorial](https://docs.gitlab.com/ee/tutorials/learn_git.html).
 
+## Using a Conda environment
+
+```
+conda create -n dercybersecurity python=3.12.9
+source activate dercybersecurity
+cd dercybersecurity
+while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt
+```
+
+
 ## Docker image used for Development
 Use the [**Dockerfile**](Dockerfile) to build a Docker image which can be used for running containers. Make sure that that the code added to the repository will run within the container.
 
