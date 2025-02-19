@@ -27,7 +27,7 @@ def investigate_csv_file(csv_filepath:str):
 			
 			for row in reader:
 				nan_count += sum(1 for cell in row if cell.strip() == '') # Count empty strings as NaN values
-			if nan_count >= 0:
+			if nan_count > 0:
 				raise ValueError(f"Found {nan_count} NaN values in CSV file!")
 			if column_name_present:
 				print(f"CSV file contains {n_rows} rows and {n_columns} column names:{[cell for cell in first_row][0:10]}(first 10 columns shown)")
