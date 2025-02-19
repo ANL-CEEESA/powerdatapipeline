@@ -26,17 +26,16 @@ def investigate_csv_file(csv_filepath:str):
 			column_name_present = all(isinstance(cell, str) for cell in first_row)  # Assuming the first row is column names if it contains strings
 			
 			for row in reader:
-				nan_count += sum(1 for cell in row if cell.strip() == '') # Count empty strings as NaN values
+				nan_count += sum(1 for cell in row if cell.strip() == '') # Count empty strings as NaN values			
+			
+			if column_name_present:
+				print(f"CSV file contains {n_rows} rows with {nan_count} NaN values and {n_columns} column names:{[cell for cell in first_row][0:10]}(first 10 columns shown)")
+			else:
+				print(f"CSV file contains {n_rows} rows with {nan_count} NaN values and {n_columns} first row elements:{[cell for cell in first_row][0:10]}(first 10 columns shown)")
 			if nan_count > 0:
 				raise ValueError(f"Found {nan_count} NaN values in CSV file!")
-			if column_name_present:
-				print(f"CSV file contains {n_rows} rows and {n_columns} column names:{[cell for cell in first_row][0:10]}(first 10 columns shown)")
-			else:
-				print(f"CSV file contains {n_rows} rows and {n_columns} first row elements:{[cell for cell in first_row][0:10]}(first 10 columns shown)")
 	
 	return column_name_present,first_row_elements,n_columns,n_rows
-
-import csv
 
 def count_total_rows(file_path:str):
 	with open(file_path, 'r', newline='') as csvfile:
