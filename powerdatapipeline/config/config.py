@@ -127,11 +127,10 @@ class ModelConfig(BaseModelDict):
         model_type: str
 
     class TrainingConfig(BaseModelDict):
-        n_epochs: int
-        convert_to_tflite: bool
+        n_epochs: int        
         model_identifier: str
         distribution_strategy: str
-        save_as_tfsavedmodel: bool
+        model_formats:list[str] = []
 
     class InferenceConfig(BaseModelDict):
         model_archivepath: str
