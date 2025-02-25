@@ -131,6 +131,7 @@ class ModelConfig(BaseModelDict):
         model_identifier: str
         distribution_strategy: str
         model_formats:list[str] = []
+        model_checkpoint_to_load:Optional[str] = None
 
     class InferenceConfig(BaseModelDict):
         model_archivepath: str
