@@ -63,25 +63,29 @@ def datetime_to_seconds(date_time) -> float:
 	
 	return datetime_s
 
-def df_to_csv(df:pd.DataFrame,csv_filepath:str):
+def df_to_csv(df:pd.DataFrame,csv_filepath:str,keep_index:bool=False) -> None:
 	"""Save dataframe as CSV"""
 
 	print(f"Saving dataframe with {len(df)} rows and following columns:{list(df.columns)} in {csv_filepath}")
-	df.to_csv(csv_filepath,index=False)
+	df.to_csv(csv_filepath,index=keep_index)
 
 def check_column_all_nan(df:pd.DataFrame,column_names:List[str]):
 	"""Check if all value in column have NaN values"""
 	
 	for column_name in column_names:
 		print(f"Checking if all values in {column_name} are NaN")
-		assert df[column_name].isna().all(), f"Expected {column_name} to have only NaN values!"
+		if not df[column_name].isna().all():
+			print(f"Found {len(df[df[column_name].notna()])} non NaN values in {column_name}:\n{df[df[column_name].notna()]} ")
+			raise ValueError(f"Expected {column_name} to have only NaN values!")
 
 def check_column_all_not_nan(df:pd.DataFrame,column_names:List[str]):
 	"""Check if any value is NaN"""
 	
 	for column_name in column_names:
 		print(f"Checking if all values in {column_name} are not NaN")
-		assert not df[column_name].isna().any(), f"Expected {column_name} to have only non-NaN values!"
+		if not df[column_name].isna().any():
+			print(f"Found following {len(df[df[column_name].isna()])} NaN values in {column_name}:\n{df[df[column_name].isna()]}")
+			raise ValueError(f"Expected {column_name} to have only non-NaN values!")
 
 def drop_columns_from_df(df:pd.DataFrame,column_names:List[str]) -> pd.DataFrame:
 	"""Drop columns"""
@@ -123,3 +127,26 @@ def get_downsampled_df(df_timeseries:pd.DataFrame,column_datetime:str="datetime"
 	find_df_timeperiod(df_timeseries_downsampled,column_datetime)
 	
 	return df_timeseries_downsampled
+
+def fill_missing_values_in_df(df:pd.DataFrame,columns_to_avoid:list=[]) -> pd.DataFrame:
+	"""Fill missing values in fronius solarpvder data"""
+	
+	for column in df.columns:	# Fill NaN values in each column
+		if df[column].isna().any():
+			nan_counts = df[column].isna().sum()
+			if column not in columns_to_avoid: #use forward fill for all measurements except cumulative measurements like energy
+				print(f"Found {nan_counts} NaN values in {column}! --  filling using forward fill strategy")
+				df[column] = df[column].ffill() #Forward fill
+			else:
+				print(f"Found {nan_counts} NaN values in {column}! --  filling using linear interpolation strategy")
+				df[column] = df[column].interpolate(method='linear', limit_direction='forward')
+			
+			#assert df[column].isna().sum() <=3, f"Abnormal number of NaN values:{df[column].isna().sum()} in {column} after filling!"
+			if df[column].isna().sum() > 3:
+				print(f"Large number of NaN's:{df[column].isna().sum()} in {column} after filling!")
+			if df[column].isna().sum() > 1 and column not in columns_to_avoid:				
+				print(f"Using backfill to fill {df[column].isna().sum()} NaN values in {column}...")
+				df[column] = df[column].interpolate(method='backfill', limit_direction='backward')
+				#print(df[column].head())
+	
+	return df
